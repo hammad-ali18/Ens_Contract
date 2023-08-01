@@ -16,7 +16,7 @@ import "@nomiclabs/hardhat-etherscan";
 
 require("@nomiclabs/hardhat-ethers");
 require('@openzeppelin/hardhat-upgrades');
-
+require('hardhat-deploy');
 dotenvConfig({ path: resolve(__dirname, "./.env") });
 
 const chainIds = {

@@ -6,3 +6,6 @@ import "@ensdomains/ens-contracts/contracts/resolvers/PublicResolver.sol";
 import '@ensdomains/ens-contracts/contracts/registry/ENS.sol';
 import "@ensdomains/ens-contracts/contracts/ethregistrar/BaseRegistrarImplementation.sol";
 import "@ensdomains/ens-contracts/contracts/ethregistrar/ETHRegistrarController.sol";
+import "@ensdomains/ens-contracts/contracts/ethregistrar/DummyOracle.sol";
+import "@ensdomains/ens-contracts/contracts/ethregistrar/ExponentialPremiumPriceOracle.sol";
+

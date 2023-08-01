@@ -53,8 +53,7 @@ async function main() {
  
  const dumyOracle = await DummyOracle.deploy(160000000000);
  console.log("Dummy Oracle address: ",dumyOracle.address);
- //  const base="0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85"
- //  const prices ="0xB9d374d0fE3D8341155663FaE31b7BeAe0aE233A"
+
  
  
  const exponentialpremiumpriceoracle = await ExponentialPremiumPriceOracle.deploy(dumyOracle.address,[0, 0, '20294266869609', '5073566717402', '158548959919'],21);
