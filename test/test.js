@@ -7,16 +7,17 @@ const { userInfo } = require("os");
 const { register } = require("ts-node");
 const provider = waffle.provider;
 
+
 // const Web3 = require('web3');
 // const web3 = new Web3();
 const hre = require("hardhat");
 const namehash = require('eth-ens-namehash');
-const { BaseRegistrar, BaseRegistrarImplementation, PriceOracle, DummyOracle, AggregatorInterface, StablePriceOracle } = require("@ensdomains/ens-contracts");
+const { BaseRegistrar, BaseRegistrarImplementation, PriceOracle, DummyOracle, AggregatorInterface, StablePriceOracle,NameWrapper } = require("@ensdomains/ens-contracts");
 // const exp = require("constants");
 const tld = "test";
 // const ethers = hre.ethers;
 // const utils = ethers.utils;
-// const labelhash = (label) => utils.keccak256(utils.toUtf8Bytes(label))
+const labelhash = (label) => utils.keccak256(utils.toUtf8Bytes(label))
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 const ZERO_HASH = "0x0000000000000000000000000000000000000000000000000000000000000000";
 const baseNode ="0x84ef65b3506f5b54a01171c1a50a4b6f269e1a8112d7764e49a36185ebeb3d07";
@@ -26,6 +27,8 @@ const maxCommitmentAge=3600
 
 // const ethers = require('ethers');
 
+const name  = 'hammad.eth';
+
 describe('Greeter', () =>{
 
     const [owner, accountOne] = provider.getWallets();
@@ -34,7 +37,7 @@ describe('Greeter', () =>{
     beforeEach( async () =>{
         Greeter = await ethers.getContractFactory("Greeter");
         greeter = await Greeter.deploy("Hello World");
-
+        
         ENS = await ethers.getContractFactory("ENSRegistry");
         ens = await ENS.deploy()
         console.log("ENS test: ",ens.address);
@@ -42,7 +45,7 @@ describe('Greeter', () =>{
         pubresolver = await ethers.getContractFactory("PublicResolver")
         pubres = await pubresolver.deploy(ens.address,ZERO_ADDRESS);
         console.log("Public Resolver test: ", pubres.address);
-
+        
         fifsregistrar = await ethers.getContractFactory("FIFSRegistrar")
         fifsreg = await fifsregistrar.deploy(ens.address, namehash.hash(tld))
         console.log("FIFS Registar test: ",fifsreg.address)
@@ -54,33 +57,57 @@ describe('Greeter', () =>{
         baseRegistrar = await ethers.getContractFactory("BaseRegistrarImplementation")
         basereg = await baseRegistrar.deploy(ens.address,baseNode);
         console.log("baseRegistrar test: ",basereg.address);
-
+        
         dummyOracle = await ethers.getContractFactory("DummyOracle")
         dummy = await dummyOracle.deploy(160000000000);
         console.log("Dummy Oracle test: ",dummy.address);
-
+        
         exppremiumpriceoracle = await ethers.getContractFactory("ExponentialPremiumPriceOracle")
         exp = await exppremiumpriceoracle.deploy(dummy.address,[0, 0, '20294266869609', '5073566717402', '158548959919'],21);
         console.log("ExponentialPremiumPriceOracle test: ",exp.address);
-
+        
         ethregistrarcontroller = await ethers.getContractFactory("ETHRegistrarController");
         ethregcontroller = await ethregistrarcontroller.deploy(basereg.address,exp.address,minCommitmentAge,maxCommitmentAge);
         console.log("ETHregistrarController test: ",ethregcontroller.address)
-  
-})
+        
+        
+        //deploying staticMetadataService
+        staticmetadataservice = await ethers.getContractFactory("StaticMetadataService")
+        metadata =  await staticmetadataservice.deploy("ens-metadata-service.appspot.com/name/0x{id}")
+        console.log("meta-data-uri: ",metadata.address)
+        
+        
+        
+        
+        namewrapper  = await ethers.getContractFactory("NameWrapper")
+        
+        
+        
+        namewrap = await namewrapper.deploy(ens.address,basereg.address,metadata.address)
+        console.log("NameWrapper test: ",namewrap.address)
+        let resolver =  await ens.resolver(baseNode)
+        console.log("resolver address: ",resolver)
+
+        
+        const hash  = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(name));
+        console.log("hash of ens name: ",hash)
+ 
+        subname = "subMuhammad"
+        const label =  ethers.utils.keccak256(ethers.utils.toUtf8Bytes(subname));
+        //can find this function on Activity of MetaMask, this setSubnodeRecord() is on NameWrapper
+        console.log("Subdomain name: ", label)
+        setsubnoderecord = await   namewrap.setSubnodeRecord(hash,label,owner.address,resolver,31536000)
+        // console.log(setsubnoderecord)
+    })
 
 
 it('Should return set string', async () =>{
     
     
-    const name  = 'hammad.eth';
-    let resolver =  await ens.resolver(baseNode)
-    console.log("resolver address: ",resolver)
     
-        let commitment = await ethregcontroller.makeCommitmentWithConfig("hammad.eth",owner.address,"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",resolver,"0x0000000000000000000000000000000000000000")
+        let commitment = await ethregcontroller.makeCommitmentWithConfig(name,owner.address,"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef","0x0000000000000000000000000000000000000000","0x0000000000000000000000000000000000000000")
         console.log("Commitment: ",commitment)
         await ethregcontroller.commit(commitment);
-        
         const duration = 604800*5
         console.log("82")
     //     await waffle.provider.send("evm_setNextBlockTimestamp", [Math.floor(Date.now() / 1000) + 60]);
@@ -105,24 +132,26 @@ console.log("owner address: ",owneraddress)
 
  let rentprice =  await ethregcontroller.rentPrice(name,duration);
  console.log(rentprice)
-        let regConfig = await ethregcontroller.registerWithConfig(name,owner.address,duration,"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef","0x0000000000000000000000000000000000000000","0x0000000000000000000000000000000000000000",{value:rentprice});
+        let regConfig = await ethregcontroller.register(name,owner.address,duration,"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",{value:rentprice});
      
-        console.log("regConfig:",regConfig)
+        // console.log("regConfig:",regConfig)
         // await ethregcontroller.register(reg)
        console.log(" line 83")
 
         // let myEns="0x9adac4ff802de6451124066ebbf37ea63a52852fe7f05f543075f60347fabfae"
         //    let addressBigNumber = new BigNumber(myEns.slice(2),16)
        
-        const hash  = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(name));
-        console.log("hash of ens name: ",hash)
         let id = ethers.BigNumber.from(hash);
         let id1 =  await basereg.nameExpires(id)
               console.log(id1);
 
+              let commitTime = await ethregcontroller.commitments("0x83ddcb8c766de449d2bdd8f7e0649e037d60bf29e793ea44c66d6f5efa5be960");
+              console.log("commit Time",commitTime)      
 
-              let register = await ethregcontroller.register(name,owner.address,duration,"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef");
-console.log(register)
+//               let register = await ethregcontroller.register(name,owner.address,duration,"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef");
+// console.log(register)
+
+
               //   await exp.price("hammad.eth")const { BigNumber } = require('bignumber.js')
 
 //       let reg = await ethregcontroller.register("hammad.eth",owner.address,duration,"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef");

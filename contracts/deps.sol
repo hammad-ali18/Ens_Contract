@@ -8,4 +8,7 @@ import "@ensdomains/ens-contracts/contracts/ethregistrar/BaseRegistrarImplementa
 import "@ensdomains/ens-contracts/contracts/ethregistrar/ETHRegistrarController.sol";
 import "@ensdomains/ens-contracts/contracts/ethregistrar/DummyOracle.sol";
 import "@ensdomains/ens-contracts/contracts/ethregistrar/ExponentialPremiumPriceOracle.sol";
+import "@ensdomains/ens-contracts/contracts/wrapper/StaticMetadataService.sol";
+// import "@ensdomains/ens-contracts/contracts/wrapper/NameWrapper.sol";
+
 
