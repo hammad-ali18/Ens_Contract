@@ -23,6 +23,7 @@ const chainIds = {
   ganache: 1337,
   goerli: 5,
   hardhat: 31337,
+  mantleTestnet :5001,
   kovan: 42,
   mainnet: 1,
   bscmainnet: 56,
@@ -48,11 +49,11 @@ if (!process.env.INFURA_API_KEY) {
   infuraApiKey = process.env.INFURA_API_KEY;
 }
 
-function createTestnetConfig(network: keyof typeof chainIds): NetworkUserConfig {
+function createTestnetConfig(network: keyof typeof chainIds): NetworkUserConfig {//takes name og testnet
   if (network == "bsctestnet") {
     const url: string = "https://data-seed-prebsc-1-s1.binance.org:8545/";
     
-    return {
+    return {//returns an object for the testnet
       accounts: [privateKey],
       chainId: chainIds[network],
       url,
@@ -89,6 +90,15 @@ function createTestnetConfig(network: keyof typeof chainIds): NetworkUserConfig 
     };
     
   }
+  else if(network == "mantleTestnet"){
+    const url: string = "https://rpc.testnet.mantle.xyz/";
+    const privateKey:any =process.env.PRIVATE_KEY;
+    return {
+      accounts:[privateKey],
+      chainId:chainIds[network],
+      url,
+    }
+  }
   else {
     const url: string = "https://" + network + ".infura.io/v3/" + infuraApiKey;
 
@@ -119,6 +129,7 @@ const config: HardhatUserConfig = {
     mumbai: createTestnetConfig("mumbai"),
     bscmainnet: createTestnetConfig("bscmainnet"),
     matic: createTestnetConfig("matic"),
+    mantleTestnet: createTestnetConfig("mantleTestnet")
   },
   etherscan: {
     // Your API key for Etherscan

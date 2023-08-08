@@ -7,6 +7,7 @@ const { userInfo } = require("os");
 const { register } = require("ts-node");
 const provider = waffle.provider;
 
+// const { describe, it } = require('mocha'); // for Mocha
 
 // const Web3 = require('web3');
 // const web3 = new Web3();
@@ -97,6 +98,11 @@ describe('Testing ENS Contracts', () =>{
     })
     
     it('Register a Domain', async () =>{
+        console.log("101")
+        let setowner = await ens.setOwner(baseNode,basereg.address)
+        
+        let owneraddress = await ens.owner(baseNode)
+        console.log("owner address: ",owner.address)
         
         
         let commitment = await ethregcontroller.makeCommitmentWithConfig(name,owner.address,"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef","0x0000000000000000000000000000000000000000","0x0000000000000000000000000000000000000000")
@@ -118,11 +124,6 @@ describe('Testing ENS Contracts', () =>{
 let addcontroller = await basereg.addController(ethregcontroller.address)
 
 
-console.log("96")
-let setowner = await ens.setOwner(baseNode,basereg.address)
-
-let owneraddress = await ens.owner(baseNode)
-console.log("owner address: ",owner.address)
 
 let rentprice =  await ethregcontroller.rentPrice(name,duration);
 console.log("rentprice: ", rentprice)
