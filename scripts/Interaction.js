@@ -14,8 +14,10 @@ const maxCommitmentAge=3600
 const provider = waffle.provider;
 
 let name="hammad.eth";
-let ENS
-
+let globalENS;
+let globalBase;
+let globalEthregcontroller;
+let globalRentPrice;
 async function main(){
     //running all the functions of test.js from commit to register
 
@@ -24,35 +26,35 @@ async function main(){
 
 
 
-    // ENS = await ethers.getContractFactory("ENSRegistry");
+    // ENS = await ethers.getContractAt("ENSRegistry");
     // let ens = await ENS.deploy()
     // console.log("ENS test: ",ens.address);
   
-//     pubresolver = await ethers.getContractFactory("PublicResolver")
+//     pubresolver = await ethers.getContractAt("PublicResolver")
 //     pubres = await pubresolver.deploy(ens.address,ZERO_ADDRESS);
 //     console.log("Public Resolver test: ", pubres.address);
     
-//     fifsregistrar = await ethers.getContractFactory("FIFSRegistrar")
+//     fifsregistrar = await ethers.getContractAt("FIFSRegistrar")
 //     fifsreg = await fifsregistrar.deploy(ens.address, namehash.hash(tld))
 //     console.log("FIFS Registar test: ",fifsreg.address)
     
-//     reverseRegistrar = await ethers.getContractFactory("ReverseRegistrar")
+//     reverseRegistrar = await ethers.getContractAt("ReverseRegistrar")
 //     revreg = await reverseRegistrar.deploy(ens.address, fifsreg.address);
 //     console.log("ReverseRegistar test: ",revreg.address)
   
-//     baseRegistrar = await ethers.getContractFactory("BaseRegistrarImplementation")
+//     baseRegistrar = await ethers.getContractAt("BaseRegistrarImplementation")
 //     basereg = await baseRegistrar.deploy(ens.address,baseNode);
 //     console.log("baseRegistrar test: ",basereg.address);
     
-//     dummyOracle = await ethers.getContractFactory("DummyOracle")
+//     dummyOracle = await ethers.getContractAt("DummyOracle")
 //     dummy = await dummyOracle.deploy(160000000000);
 //     console.log("Dummy Oracle test: ",dummy.address);
     
-//     exppremiumpriceoracle = await ethers.getContractFactory("ExponentialPremiumPriceOracle")
+//     exppremiumpriceoracle = await ethers.getContractAt("ExponentialPremiumPriceOracle")
 //     exp = await exppremiumpriceoracle.deploy(dummy.address,[0, 0, '20294266869609', '5073566717402', '158548959919'],21);
 //     console.log("ExponentialPremiumPriceOracle test: ",exp.address);
     
-//     ethregistrarcontroller = await ethers.getContractFactory("ETHRegistrarController");
+//     ethregistrarcontroller = await ethers.getContractAt("ETHRegistrarController");
 //     ethregcontroller = await ethregistrarcontroller.deploy(basereg.address,exp.address,minCommitmentAge,maxCommitmentAge);
 //     console.log("ETHregistrarController test: ",ethregcontroller.address)
  
@@ -112,89 +114,181 @@ async function main(){
 //     process.exit(1);
 //   });
 
-  async function SetRecord(){
-    ENS = await ethers.getContractFactory("ENSRegistry");
-   let ens2 = await ENS.deploy();
-    console.log("ens address: ",ens2.address)
-  let  baseRegistrar = await ethers.getContractFactory("BaseRegistrarImplementation")
-   let basereg =  await baseRegistrar.deploy(ens2.address,baseNode);
-    console.log("base registrar: ", basereg.address);
-    let setowner = await ens2.setOwner(baseNode,basereg.address)
-    console.log("Success")    
-    // let owneraddress = await ENS.owner(baseNode)
-    // console.log("owner address: ",owneraddress)
-    
-    
-    // let commitment = await ethregcontroller.makeCommitmentWithConfig(name,"0xA6597Afd9FE6c91cd096E95A9d9EDDB38E5Eb843","0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef","0x0000000000000000000000000000000000000000","0x0000000000000000000000000000000000000000")
-    // console.log("Commitment: ",commitment)
-    // await ethregcontroller.commit(commitment);
-
-
-  
-
-    // resolver =  await ENS.resolver(baseNode)
-    // console.log("resolver address: ",resolver)
-    // let setrecords = await ENS.setRecord(baseNode,"0xA6597Afd9FE6c91cd096E95A9d9EDDB38E5Eb843",resolver,31536000)
-  
-}
 
 async function deploy(){
-    ENS = await ethers.getContractFactory("ENSRegistry");
-    let ens2 = await ENS.deploy()
+  console.log("deploy function called");
+  //contractAt
 
-    let  baseRegistrar = await ethers.getContractFactory("BaseRegistrarImplementation")
-   basereg =  await baseRegistrar.deploy(ens2.address,baseNode);
-    
-    let    dummyOracle = await ethers.getContractFactory("DummyOracle")
-    dummy = await dummyOracle.deploy(160000000000);
-    console.log("Dummy Oracle test: ",dummy.address);
-    
-    exppremiumpriceoracle = await ethers.getContractFactory("ExponentialPremiumPriceOracle")
-    exp = await exppremiumpriceoracle.deploy(dummy.address,[0, 0, '20294266869609', '5073566717402', '158548959919'],21);
-    console.log("ExponentialPremiumPriceOracle test: ",exp.address);
+//   ENS = await ethers.getContractAt("ENSRegistry","0x5FbDB2315678afecb367f032d93F642f64180aa3");
+//   // console.log(ENS.address);
+//   // let ens2 = await ENS.deploy()
+//   // console.log(ens2.address);
+  
+//   basereg = await ethers.getContractAt("BaseRegistrarImplementation","0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512")
+//   //  basereg =  await basereg.deploy(ens2.address,baseNode);
+//   console.log("basereg: ",basereg.address)
+  
+//   // console.log(basereg.address);
+  
+//   dummyOracle = await ethers.getContractAt("DummyOracle","0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0")
+//   // dummy = await dummyOracle.deploy(160000000000);
+//   // console.log("Dummy Oracle test: ",dummy.address);
+  
+//   exppremiumpriceoracle = await ethers.getContractAt("ExponentialPremiumPriceOracle","0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9")
+//   // exp = await exppremiumpriceoracle.deploy(dummy.address,[0, 0, '20294266869609', '5073566717402', '158548959919'],21);
+//   // console.log("ExponentialPremiumPriceOracle test: ",exp.address);
+  
+//   ethregcontroller = await ethers.getContractFactory("ETHRegistrarController");//0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9
+// console.log("ethregcontroller: ",ethregcontroller.address)
 
-    ethregistrarcontroller = await ethers.getContractFactory("ETHRegistrarController");
-    ethregcontroller = await ethregistrarcontroller.deploy(basereg.address,exp.address,minCommitmentAge,maxCommitmentAge);
-    console.log("ETHregistrarController test: ",ethregcontroller.address)
+// let minRegisterationDuration = await ethregcontroller.MIN_REGISTRATION_DURATION();
+// console.log("min registeration duration: ",minRegisterationDuration);
+
+  // ethregcontroller = await ethregistrarcontroller.deploy(basereg.address,exp.address,minCommitmentAge,maxCommitmentAge);
+  // console.log("ETHregistrarController test: ",ethregcontroller.address)
+
+
+
+  //contractFactory
+
+  let ENS = await ethers.getContractFactory("ENSRegistry");
+  ens = await ENS.deploy()
+  globalENS = ens;
+  console.log("ENS test: ",ens.address);
+
+  pubresolver = await ethers.getContractFactory("PublicResolver")
+  pubres = await pubresolver.deploy(ens.address,ZERO_ADDRESS);
+  console.log("Public Resolver test: ", pubres.address);
+  
+  fifsregistrar = await ethers.getContractFactory("FIFSRegistrar")
+  fifsreg = await fifsregistrar.deploy(ens.address, namehash.hash(tld))
+  console.log("FIFS Registar test: ",fifsreg.address)
+  
+  reverseRegistrar = await ethers.getContractFactory("ReverseRegistrar")
+  revreg = await reverseRegistrar.deploy(ens.address, fifsreg.address);
+  console.log("ReverseRegistar test: ",revreg.address)
+
+  baseRegistrar = await ethers.getContractFactory("BaseRegistrarImplementation")
+  basereg = await baseRegistrar.deploy(ens.address,baseNode);
+  globalBase = basereg;
+  console.log("baseRegistrar test: ",basereg.address);
+  
+  dummyOracle = await ethers.getContractFactory("DummyOracle")
+  dummy = await dummyOracle.deploy(160000000000);
+  console.log("Dummy Oracle test: ",dummy.address);
+  
+  exppremiumpriceoracle = await ethers.getContractFactory("ExponentialPremiumPriceOracle")
+  exp = await exppremiumpriceoracle.deploy(dummy.address,[0, 0, '20294266869609', '5073566717402', '158548959919'],21);
+  console.log("ExponentialPremiumPriceOracle test: ",exp.address);
+  
+  ethregistrarcontroller = await ethers.getContractFactory("ETHRegistrarController");
+  ethregcontroller = await ethregistrarcontroller.deploy(basereg.address,exp.address,minCommitmentAge,maxCommitmentAge);
+globalEthregcontroller = ethregcontroller;
+  console.log("ETHregistrarController test: ",ethregcontroller.address)
+  
+}
+let ensaddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+let baseregaddress = "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"
+
+
+async function SetRecord(){
+  // ENS = await ethers.getContractAt("ENSRegistry","0x5FbDB2315678afecb367f032d93F642f64180aa3");
+//  let ens2 = await ENS.deploy();
+//   console.log("ens address: ",ens2.address)
+//  baseRegistrar = await ethers.getContractAt("BaseRegistrarImplementation","0x5FbDB2315678afecb367f032d93F642f64180aa3")
+//  let basereg =  await baseRegistrar.deploy(ens2.address,baseNode);
+//   console.log("base registrar: ", basereg.address);
+
+
+
+//  basereg1 = basereg.deploy()
+
+
+
+//basereg address
+setowner = await globalENS.setOwner(baseNode,"0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512")
+  console.log("Set Record Success");    
+  // let owneraddress = await ENS.owner(baseNode)
+  // console.log("owner address: ",owneraddress)
+  
+  
+  // let commitment = await ethregcontroller.makeCommitmentWithConfig(name,"0xA6597Afd9FE6c91cd096E95A9d9EDDB38E5Eb843","0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef","0x0000000000000000000000000000000000000000","0x0000000000000000000000000000000000000000")
+  // console.log("Commitment: ",commitment)
+  // await ethregcontroller.commit(commitment);
+
+
+
+
+  // resolver =  await ENS.resolver(baseNode)
+  // console.log("resolver address: ",resolver)
+  // let setrecords = await ENS.setRecord(baseNode,"0xA6597Afd9FE6c91cd096E95A9d9EDDB38E5Eb843",resolver,31536000)
 
 }
-deploy();
-let basereg;
 
 
-  async function AddController(){
- let addcontroller = await basereg.addController(ethregcontroller.address)
+
+
+async function AddController(){
+//  await deploy();
+
+
+   //ethregcontroller.address
+
+ let addcontroller = await globalBase.addController("0xa513E6E4b8f2a923D98304ec87F64353C4D5C853")
 console.log("AddController Success");
-  }
+}
+async function RentPrice(){
+// await deploy();
+const duration = 604800*5
 
-  async function RentPrice(){
+// ethregcontroller = await ethers.getContractAt("ETHRegistrarController","0xa513E6E4b8f2a923D98304ec87F64353C4D5C853");
 
-  const duration = 604800*5
 
-  rentprice =  await ethregcontroller.rentPrice(name,duration);
+let minregduration =  await globalEthregcontroller.MIN_REGISTRATION_DURATION();
+console.log("minregistration duration: ",minregduration)
+let rentprice = await globalEthregcontroller.rentPrice(name,duration);
 console.log("rentprice: ", rentprice)
+globalRentPrice = rentprice;
 console.log("rent price Success");
-  }
+
+}
+
 
   async function Register(){
 
-register = await ethregcontroller.register(name,"0xA6597Afd9FE6c91cd096E95A9d9EDDB38E5Eb843",duration,"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",{value:rentprice});
+    // await deploy();
+    //calling rentprice variable here
+ 
+    const duration = 604800*5
+
+  // ethregcontroller = await ethers.getContractAt("ETHRegistrarController","0xa513E6E4b8f2a923D98304ec87F64353C4D5C853");
+
+reg = await globalEthregcontroller.register(name,"0xA6597Afd9FE6c91cd096E95A9d9EDDB38E5Eb843",duration,"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",{value:globalRentPrice});
 console.log("Register Success");
   }
   async function Commitment(){
-    await deploy()
-    let commitTime = await ethregcontroller.commitments("0x83ddcb8c766de449d2bdd8f7e0649e037d60bf29e793ea44c66d6f5efa5be960");
-console.log("commit Time",commitTime) 
+    // await deploy();
+  // ethregcontroller = await ethers.getContractAt("ETHRegistrarController","0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9");
+      let commitTime = await globalEthregcontroller.commit("0x83ddcb8c766de449d2bdd8f7e0649e037d60bf29e793ea44c66d6f5efa5be960");
+console.log("commit Time",commitTime)
+console.log("commit success") 
   }
 
-//    SetRecord();
-async function callingInteractors(){
-      await AddController();
-//  await  RentPrice();
-//  await  Register();
- //    Commitment();
+  async function callingInteractors(){
+  await deploy();
+ await SetRecord();
+ await AddController();
+ await  RentPrice();
+ await  Register();
+//  await Commitment();
 }
 
+
+
+// RentPrice();
+
+// Register();
 callingInteractors();
+// SetRecord();
 
 

@@ -56,41 +56,7 @@ async function main() {
   let owneraddress = await ens.owner(baseNode)
   console.log("owner address: ",owner.address)
   
-  //running all the functions of test.js from commit to register
-
-  let commitment = await ethregcontroller.makeCommitmentWithConfig(name,owner.address,"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef","0x0000000000000000000000000000000000000000","0x0000000000000000000000000000000000000000")
-  console.log("Commitment: ",commitment)
-  await ethregcontroller.commit(commitment);
-  const duration = 604800*5
-  console.log("82")
-  //     await waffle.provider.send("evm_setNextBlockTimestamp", [Math.floor(Date.now() / 1000) + 60]);
-  //     // Mine a new block with the updated timestamp
-// await waffle.provider.send("evm_mine");
-    await provider.send('evm_increaseTime', [61]); // Increase by 60 seconds
-    await provider.send('evm_mine'); // Mine a new block to update the timestamp
-    console.log("86")
-
-    
-    let setrecords = await ens.setRecord(baseNode,owner.address,resolver,31536000)
-    
-    
-let addcontroller = await basereg.addController(ethregcontroller.address)
-
-
-
-let rentprice =  await ethregcontroller.rentPrice(name,duration);
-console.log("rentprice: ", rentprice)
-let register = await ethregcontroller.register(name,owner.address,duration,"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",{value:rentprice});
-
-
-// let myEns="0x9adac4ff802de6451124066ebbf37ea63a52852fe7f05f543075f60347fabfae"
-//    let addressBigNumber = new BigNumber(myEns.slice(2),16)
-
-//  id = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(ethers.BigNumber.from(hash)));
-
-console.log(" line 139")
-let commitTime = await ethregcontroller.commitments("0x83ddcb8c766de449d2bdd8f7e0649e037d60bf29e793ea44c66d6f5efa5be960");
-console.log("commit Time",commitTime)      
+       
  
 
 };
